@@ -121,7 +121,7 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
         }
     }
     
-    //动画操作
+    //动画操作 返回
     func animateMainView(to state:ClockSwitchState) {
         var x:CGFloat
         var color:CGColorRef
