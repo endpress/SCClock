@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     var tableView: UITableView!
     var datasourceArray = NSMutableArray()
+    let iden = "Cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class ViewController: UIViewController {
         tableView.separatorStyle = .None
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.registerClass(SCClockCell.self, forCellReuseIdentifier: iden)
         self.view.addSubview(tableView)
     }
 
@@ -46,7 +48,7 @@ class ViewController: UIViewController {
 }
 
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewDelegate {
 
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -59,10 +61,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let iden = "Cell"
-        tableView.registerClass(SCClockCell.self, forCellReuseIdentifier: iden)
-        let cell = tableView.dequeueReusableCellWithIdentifier(iden, forIndexPath: indexPath)
+        let cell: SCClockCell = (tableView.dequeueReusableCellWithIdentifier(iden, forIndexPath: indexPath) as? SCClockCell)!
         cell.selectionStyle = .None
+        cell.clockView?.delegate = self
+        
         return cell
     }
     
@@ -72,6 +74,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("cell clicked == \(indexPath.row)")
+    }
+    
+    func clockViewChanged(clockView: SCClockView, atCell: SCClockCell, toState: ClockSwitchState) {
+        print("state == \(toState)")
+        
     }
     
     

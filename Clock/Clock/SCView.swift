@@ -16,11 +16,17 @@ extension UIView {
         get {
             return self.bounds.width
         }
+        set {
+            self.frame.size.width = newValue
+        }
     }
     
     var sc_height:CGFloat {
         get {
             return self.bounds.height
+        }
+        set {
+             self.frame.size.height = newValue
         }
     }
     
@@ -28,11 +34,17 @@ extension UIView {
         get {
             return self.frame.origin.x
         }
+        set {
+            self.frame.origin.x = newValue
+        }
     }
     
     var sc_y:CGFloat {
         get {
             return self.frame.origin.y
+        }
+        set {
+             self.frame.origin.y = newValue
         }
     }
 }
