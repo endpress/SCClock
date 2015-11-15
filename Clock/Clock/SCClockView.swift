@@ -81,27 +81,28 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
         addSubview(mainView)
     }
     
+    //处理手势事件
     var originCenter: CGPoint?
-    var originOffsety: CGFloat?
+//    var originOffsety: CGFloat?
     
     func panMainView(sender: UIPanGestureRecognizer) {
         let state = sender.state
         let distanceX = sender.translationInView(mainView).x
-        let tableview: UITableView = (self.superview!.superview!.superview!.superview! as? UITableView)! //得到tableView
-        let distanceInTableview = sender.translationInView(tableview).y
+//        let tableview: UITableView = (self.superview!.superview!.superview!.superview! as? UITableView)! //得到tableView
+//        let distanceInTableview = sender.translationInView(tableview).y
         
         
         switch state {
             
         case .Began:
             originCenter = mainView.center
-            originOffsety = tableview.contentOffset.y
+//            originOffsety = tableview.contentOffset.y
             
         case .Changed:
             mainView.center = CGPointMake( originCenter!.x + distanceX, originCenter!.y)
             if mainView.sc_x >= self.sc_width * 0.2 { mainView.sc_x = self.sc_width * 0.2 }
             if mainView.sc_x <= 0 { mainView.sc_x = 0 }
-            tableview.contentOffset.y = -distanceInTableview + originOffsety!
+//            tableview.contentOffset.y = -distanceInTableview + originOffsety!
             
         case .Ended, .Failed:
             if mainView.sc_x >= self.sc_width * 0.1 {
