@@ -17,6 +17,8 @@
 		408F733B1BF56B7F00F5D160 /* SCClockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408F73381BF56B7F00F5D160 /* SCClockCell.swift */; };
 		408F733C1BF56B7F00F5D160 /* SCClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408F73391BF56B7F00F5D160 /* SCClockView.swift */; };
 		408F733D1BF56B7F00F5D160 /* SCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408F733A1BF56B7F00F5D160 /* SCView.swift */; };
+		5A1CE2991BF7230300653F58 /* SCPickerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1CE2981BF7230300653F58 /* SCPickerWindow.swift */; };
+		5AF4F45A1BF75F3B007773E8 /* SCHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF4F4591BF75F3B007773E8 /* SCHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		408F73381BF56B7F00F5D160 /* SCClockCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCClockCell.swift; sourceTree = "<group>"; };
 		408F73391BF56B7F00F5D160 /* SCClockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCClockView.swift; sourceTree = "<group>"; };
 		408F733A1BF56B7F00F5D160 /* SCView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCView.swift; sourceTree = "<group>"; };
+		5A1CE2981BF7230300653F58 /* SCPickerWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCPickerWindow.swift; sourceTree = "<group>"; };
+		5AF4F4591BF75F3B007773E8 /* SCHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +71,8 @@
 				407CE3861BF46A420032B575 /* alarm29.m4a */,
 				407CE3741BF468C40032B575 /* AppDelegate.swift */,
 				407CE3761BF468C40032B575 /* ViewController.swift */,
-				408F73381BF56B7F00F5D160 /* SCClockCell.swift */,
-				408F73391BF56B7F00F5D160 /* SCClockView.swift */,
+				5A4786901BF83783003EA8B5 /* Cell */,
+				5A4786911BF8378F003EA8B5 /* DatePick */,
 				407CE38C1BF493E20032B575 /* Extension */,
 				407CE3781BF468C40032B575 /* Main.storyboard */,
 				407CE37B1BF468C40032B575 /* Assets.xcassets */,
@@ -85,6 +89,24 @@
 				407CE38A1BF493D40032B575 /* SCColor.swift */,
 			);
 			name = Extension;
+			sourceTree = "<group>";
+		};
+		5A4786901BF83783003EA8B5 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				408F73381BF56B7F00F5D160 /* SCClockCell.swift */,
+				408F73391BF56B7F00F5D160 /* SCClockView.swift */,
+			);
+			name = Cell;
+			sourceTree = "<group>";
+		};
+		5A4786911BF8378F003EA8B5 /* DatePick */ = {
+			isa = PBXGroup;
+			children = (
+				5A1CE2981BF7230300653F58 /* SCPickerWindow.swift */,
+				5AF4F4591BF75F3B007773E8 /* SCHeaderView.swift */,
+			);
+			name = DatePick;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,10 +184,12 @@
 			files = (
 				407CE3771BF468C40032B575 /* ViewController.swift in Sources */,
 				407CE3751BF468C40032B575 /* AppDelegate.swift in Sources */,
+				5A1CE2991BF7230300653F58 /* SCPickerWindow.swift in Sources */,
 				408F733C1BF56B7F00F5D160 /* SCClockView.swift in Sources */,
 				408F733B1BF56B7F00F5D160 /* SCClockCell.swift in Sources */,
 				408F733D1BF56B7F00F5D160 /* SCView.swift in Sources */,
 				407CE38B1BF493D40032B575 /* SCColor.swift in Sources */,
+				5AF4F45A1BF75F3B007773E8 /* SCHeaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
