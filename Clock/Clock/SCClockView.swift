@@ -70,10 +70,10 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
         mainView.addGestureRecognizer(gesture)
         
         //时间 timeLabel
-        timeLabel.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.5, self.sc_height * 0.8)
+        timeLabel.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height * 0.8)
         timeLabel.center = mainView.center
-        timeLabel.text = "7:00"
-        timeLabel.font = UIFont(name: "Helvetica-Bold", size: 80.0)     //UIFont.systemFontOfSize(CGFloat(50.0), weight: CGFloat(5.0))
+        timeLabel.text = "07:00:00"
+        timeLabel.font = UIFont(name: "Helvetica-Bold", size: 60.0)     //UIFont.systemFontOfSize(CGFloat(50.0), weight: CGFloat(5.0))
         timeLabel.textColor = UIColor.lightGrayColor()
         timeLabel.textAlignment = NSTextAlignment.Center
         mainView.addSubview(timeLabel)

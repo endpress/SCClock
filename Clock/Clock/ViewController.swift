@@ -13,14 +13,18 @@ class ViewController: UIViewController {
     var tableView: UITableView!
     var datasourceArray = NSMutableArray()
     let iden = "Cell"
-    
-    var w:UIWindow? = UIWindow()  //必须创建一个存储属性保存window，不然会无法持有window，从而不会显示
+    var timeStr = ""
+    var w:SCPickerWindow?  //必须创建一个存储属性保存window，不然会无法持有window，从而不会显示
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         UIApplication.sharedApplication().statusBarHidden = true
         initTableView()
+    }
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("diaoyongle,dashadiao")
     }
     
     func initTableView() {
@@ -42,6 +46,10 @@ class ViewController: UIViewController {
         notification.alertTitle = "nimeide"
         notification.soundName = "alarm29.m4a"
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
+    }
+    
+    deinit {
+        print("deinit调用了")
     }
 
     override func didReceiveMemoryWarning() {
@@ -76,18 +84,23 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        print("cell clicked == \(indexPath.row)")
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell: SCClockCell = tableView.cellForRowAtIndexPath(indexPath) as! SCClockCell
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             UIView.animateWithDuration(0.5, animations: { () -> Void in
-                tableView.contentOffset = CGPointMake(CGFloat(0), CGFloat(cell!.sc_y))
+                tableView.contentOffset = CGPointMake(CGFloat(0), CGFloat(cell.sc_y))
                 }, completion: { (finish) -> Void in
                     self.w = SCPickerWindow.sharedInstance()
+                    self.w!.setOriginalTime(cell.clockView!.timeLabel.text!)
                     self.w!.makeKeyAndVisible()
                     self.w!.windowLevel = UIWindowLevelAlert
                     self.w!.hidden = false
                     let gesture = UITapGestureRecognizer.init(target: self, action: Selector("tapWindow:"))
                     self.w!.addGestureRecognizer(gesture)
+                    self.w!.OKHander = {(time: String) ->Void in
+                        self.timeStr = time
+                        cell.clockView!.timeLabel.text = time
+                        self.tapWindow(gesture)
+                    }
             })
         }
 
@@ -97,7 +110,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     
     func clockViewChanged(clockView: SCClockView, atCell: SCClockCell, toState: ClockSwitchState) {
         print("state == \(toState)")
-        
     }
     
     //MARK:-
