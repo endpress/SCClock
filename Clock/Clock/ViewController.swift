@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         }
     }
     
-    var notiArray:[UILocalNotification] {              //存放LocakNotification的数组
+    var notiArray:[Int] {              //存放LocakNotification的数组
         get {
             return SCNotification.notiArray
         }
@@ -75,12 +75,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
         cell.clockView!.timeLabel.text = datasourceArray[indexPath.row] as? String
         let notiArr = notiArray
         if notiArr.count == datasourceArray.count {
-            for noti in notiArr {
-                if  let rawValue = noti.userInfo!["state"] as? Int {
-                    let state = rawValue == 1 ? ClockSwitchState.On : ClockSwitchState.Off
-                    cell.initState = state
-                }
-            }
+                let rawValue = notiArray[indexPath.row]
+                let state = rawValue == 1 ? ClockSwitchState.On : ClockSwitchState.Off
+                cell.initState = state
         }
         
         return cell
@@ -119,28 +116,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     
     func clockViewChanged(clockView: SCClockView, atCell: SCClockCell, toState: ClockSwitchState) {
         let indexPath = tableView.indexPathForCell(atCell)!
+        let row = indexPath.row
         print("state == \(toState) and indexpath == \(indexPath.row) and time == \(clockView.timeLabel.text!)")
-        var array = notiArray
         switch toState {
             
         case .Off:
-            
-            var userInfo = array[indexPath.row].userInfo
-            userInfo!["state"] = ClockSwitchState.Off.rawValue
-            array[indexPath.row].userInfo = userInfo
-            notiArray = array
-            let noti = notiArray[indexPath.row]
-            UIApplication.sharedApplication().cancelLocalNotification(noti)
+            let notificationArray = UIApplication.sharedApplication().scheduledLocalNotifications!
+            for noti in notificationArray {
+                if let info = noti.userInfo!["info"] as? Int where info == row {
+                    UIApplication.sharedApplication().cancelLocalNotification(noti)
+                    var array = notiArray
+                    array[row] = 0
+                    notiArray = array
+                }
+            }
         case .On:
-            let timeStr = atCell.clockView!.timeLabel.text
-            let noti = array[indexPath.row]
-            noti.fireDate = stringToNSDate(timeStr!)
-            noti.timeZone = NSTimeZone.defaultTimeZone()
-            noti.repeatInterval = .Day
-            noti.userInfo!["state"] = ClockSwitchState.On.rawValue
-            array[indexPath.row] = noti
+            
+            let timeStr = atCell.clockView!.timeLabel.text!
+            let fireDate = stringToNSDate(timeStr)
+            let noti = createNotification(row)
+            noti.fireDate = fireDate
+            UIApplication.sharedApplication().scheduleLocalNotification(noti)
+            var array = notiArray
+            array[row] = 1
             notiArray = array
-            UIApplication.sharedApplication().scheduleLocalNotification(notiArray[indexPath.row])
         }
     }
     
@@ -165,27 +164,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     
     //转换字符串到nsdate
     func stringToNSDate(string: String) ->NSDate {
-        let formatter = NSDateFormatter.init()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//        formatter.dateStyle = .FullStyle
-//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
-//        let component = calendar.components(.Day, fromDate: NSDate())
-//        component.hour = 7
-//        component.minute = 5
-//        component.second = 5
-//        
-//        let dateetete = calendar.dateFromComponents(component)
-//        print(dateetete)
-        let adf = NSDate.init(timeIntervalSince1970: 8*60*60)
-        print(formatter.stringFromDate(adf))
-        print(formatter.dateFromString(string))
-        if let date = formatter.dateFromString(string) {
-            print(date)
-            return date
-        } else { return NSDate() }
-        
+        let h = string.substringToIndex(string.startIndex.advancedBy(2))
+        let m = string.substringWithRange(Range(start: string.startIndex.advancedBy(3), end: string.startIndex.advancedBy(5)))
+        let s = string.substringWithRange(Range(start: string.startIndex.advancedBy(6), end: string.startIndex.advancedBy(8)))
+        let sum = Int(h)! * 60 * 60 + Int(m)! * 60 + Int(s)!
+        let date = NSDate.init(timeIntervalSince1970: Double(sum))
+        return date
     }
     
-    
+    //创建一个LocalNotification
+    func createNotification(info: Int) ->UILocalNotification {
+        let notification = UILocalNotification()
+        //        notification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(5.0))
+        notification.timeZone = NSTimeZone.localTimeZone()
+        notification.repeatInterval = .Day
+        notification.alertBody = "该起床了"         //显示的信息
+//        notification.applicationIconBadgeNumber = 1    //程序角标
+        notification.alertTitle = "nimeide"
+        notification.hasAction = true
+        notification.alertAction = "起床"          // laert时候的标题
+        notification.alertLaunchImage = "avatar.jpg"
+        notification.soundName = "alarm29.m4a"
+        notification.userInfo = ["info": info]
+
+        return notification
+    }
 }
 

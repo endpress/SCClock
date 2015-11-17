@@ -74,8 +74,10 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
         let gesture = UIPanGestureRecognizer.init(target: self, action: "panMainView:")
         mainView.addGestureRecognizer(gesture)
         //时间 timeLabel
-        timeLabel.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height * 0.8)
+        let frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height * 0.8)
+        timeLabel.frame = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(CGFloat(20), CGFloat(10), CGFloat(20), CGFloat(10)))
         timeLabel.font = UIFont(name: "Helvetica-Bold", size: 60.0)
+        timeLabel.adjustsFontSizeToFitWidth = true
         timeLabel.textAlignment = NSTextAlignment.Center
         mainView.addSubview(timeLabel)
         addSubview(mainView)

@@ -29,18 +29,13 @@ struct SCNotification {
         }
     }
     
-    static var notiArray:[UILocalNotification] {              //存放LocakNotification的数组
+    static var notiArray:[Int] {              //存放LocakNotification的数组
         get {
             let userDefault = NSUserDefaults.standardUserDefaults()
             if let array = userDefault.objectForKey("Notificaiton") {
-            return array as! [UILocalNotification]
+                return array as! [Int]
             } else {
-                let arr = NSMutableArray.init(capacity: 3)
-                for _ in 0...2 {
-                let noti = createNotification(ClockSwitchState.Off)
-                arr.addObject(noti)
-                }
-                return arr.copy() as! [UILocalNotification]
+                return [0, 0, 0]
             }
         }
         set {
@@ -49,16 +44,4 @@ struct SCNotification {
         }
     }
     
-    //创建一个LocalNotification
-    static func createNotification(state: ClockSwitchState) ->UILocalNotification {
-        let notification = UILocalNotification()
-//        notification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(5.0))
-        notification.timeZone = NSTimeZone.localTimeZone()
-        notification.alertBody = "caonima"
-        notification.alertTitle = "nimeide"
-        notification.soundName = "alarm29.m4a"
-        notification.userInfo = ["state": state.rawValue]
-        
-        return notification
-    }
 }
