@@ -1,7 +1,8 @@
 # SCClock
 my clock
 <<<<<<< HEAD
-# 这是我的第一个Github项目 \n
+=========
+# 这是我的第一个Github项目
 #
 # 是一个关于闹钟的APP
 =======
