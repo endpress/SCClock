@@ -24,62 +24,67 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
     
     var delegate: ClockViewDelegate?
     //监听state变化
-    var state:ClockSwitchState = .Off {
-        didSet {
-            self.delegate?.clockViewChanged(self, atCell: self.getCell(), toState: state)
+    var state:ClockSwitchState? {
+        willSet {
+            if state == nil {
+                
+            } else {
+                self.delegate!.clockViewChanged(self, atCell: self.getCell(), toState: newValue!)
+            }
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)  //UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(CGFloat(20), CGFloat(10), CGFloat(20), CGFloat(10)))
     }
-    
+
+    //MARK: -
+    //MARK: 布局子视图
+    var timeLabel = UILabel() //中间可以滑动的视图
+    var mainView = UIView()   //中间主要视图
     //用来确定cell大小
-    func setView (frame: CGRect) {
+    func setView (frame: CGRect, state: ClockSwitchState) {
         self.frame = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(CGFloat(20), CGFloat(10), CGFloat(20), CGFloat(10)))
-        self.layer.backgroundColor = UIColor.whiteColor().CGColor
-        //设置阴影
         self.layer.shadowColor = UIColor.lightGrayColor().CGColor
         self.layer.shadowOpacity = 0.9
         self.layer.shadowOffset = CGSizeMake(CGFloat(10.0), CGFloat(10.0))
         self.layer.shadowRadius = 10.0
-        //设置其他样式
         self.layer.cornerRadius = CGRectGetHeight(self.bounds) / 2
         self.layer.borderWidth = 5.0
         self.layer.borderColor = UIColor.sc_init(r: 255, g: 174, b: 185, alpha: 1.0)?.CGColor
-
-        //load SubView
-        sc_layoutSubviews()
         
+        var x:CGFloat
+        var color:CGColorRef
+            if state == .On {
+                x = self.sc_width * 0.2
+                color = (UIColor.sc_init(r: 67, g: 205, b: 128, alpha: 1.0)!.CGColor)
+                timeLabel.textColor = UIColor.whiteColor()
+            } else {
+                x = 0
+                color = UIColor.whiteColor().CGColor
+                timeLabel.textColor = UIColor.lightGrayColor()
+            }
+        mainView.frame = CGRectMake(x, CGFloat(0), self.sc_width * 0.8,self.sc_height) //0.8系数，来确定宽度
+        self.layer.backgroundColor = color
+        self.state = state
+        //load SubView
+        mainView.layer.backgroundColor = UIColor.sc_init(r:127, g:255, b:212, alpha: 1.0)?.CGColor
+        mainView.layer.cornerRadius = self.sc_height / 2
+        //增加手势
+        let gesture = UIPanGestureRecognizer.init(target: self, action: "panMainView:")
+        mainView.addGestureRecognizer(gesture)
+        //时间 timeLabel
+        timeLabel.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height * 0.8)
+        timeLabel.font = UIFont(name: "Helvetica-Bold", size: 60.0)
+        timeLabel.textAlignment = NSTextAlignment.Center
+        mainView.addSubview(timeLabel)
+        addSubview(mainView)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    //MARK: 变量 用来存放子视图
-    var timeLabel = UILabel() //中间可以滑动的视图
-    var mainView = UIView()   //中间主要视图
-    
-    func sc_layoutSubviews() {
-        mainView.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height) //0.8系数，来确定宽度
-        mainView.layer.backgroundColor = UIColor.sc_init(r:127, g:255, b:212, alpha: 1.0)?.CGColor
-        mainView.layer.cornerRadius = self.sc_height / 2
-        
-        //增加手势
-        let gesture = UIPanGestureRecognizer.init(target: self, action: "panMainView:")
-        mainView.addGestureRecognizer(gesture)
-        
-        //时间 timeLabel
-        timeLabel.frame = CGRectMake(CGFloat(0), CGFloat(0), self.sc_width * 0.8, self.sc_height * 0.8)
-        timeLabel.center = mainView.center
-        timeLabel.text = "07:00:00"
-        timeLabel.font = UIFont(name: "Helvetica-Bold", size: 60.0)     //UIFont.systemFontOfSize(CGFloat(50.0), weight: CGFloat(5.0))
-        timeLabel.textColor = UIColor.lightGrayColor()
-        timeLabel.textAlignment = NSTextAlignment.Center
-        mainView.addSubview(timeLabel)
-        
-        addSubview(mainView)
-    }
+
     
     //处理手势事件
     var originCenter: CGPoint?
@@ -107,14 +112,8 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
         case .Ended, .Failed:
             if mainView.sc_x >= self.sc_width * 0.1 {
                 animateMainView(to: .On)
-                if self.state == .Off {
-                    self.state = .On
-                }
             } else {
                 animateMainView(to: .Off)
-                if self.state == .On {
-                    self.state = .Off
-                }
             }
             
         default: break
@@ -126,6 +125,11 @@ class SCClockView: UIView, UIGestureRecognizerDelegate {
     func animateMainView(to state:ClockSwitchState) {
         var x:CGFloat
         var color:CGColorRef
+        
+        if self.state != state {
+            self.state = state
+        }
+        
         if state == .On {
             x = self.sc_width * 0.2
             color = (UIColor.sc_init(r: 67, g: 205, b: 128, alpha: 1.0)!.CGColor)

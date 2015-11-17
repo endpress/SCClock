@@ -13,11 +13,11 @@ import UIKit
 class SCClockCell: UITableViewCell {
     
     var clockView: SCClockView?
-    
+    var initState = ClockSwitchState.Off
     //此时用这个方法，是因为cell初始化的时候，调用 init(style: UITableViewCellStyle, reuseIdentifier: String?) 此时候还得不到cell的frame
     //所以，延迟设置，调用set View的时候设置frame，同时设置子视图的frame
     override func drawRect(rect: CGRect) {
-        clockView?.setView(rect)
+        clockView?.setView(rect, state: initState)
     }
     
     //当调用cell.mainView.delegate的时候，mainView ＝ nil 所以要提前初始化mainview 不能放在drawrect方法里面初始化

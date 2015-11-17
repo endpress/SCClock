@@ -11,20 +11,32 @@ import UIKit
 class ViewController: UIViewController {
 
     var tableView: UITableView!
-    var datasourceArray = NSMutableArray()
     let iden = "Cell"
-    var timeStr = ""
     var w:SCPickerWindow?  //必须创建一个存储属性保存window，不然会无法持有window，从而不会显示
+    
+    var datasourceArray: NSMutableArray {              //存放时间的数组
+        get {
+            return SCNotification.datasourceArray
+        }
+        set {
+            SCNotification.datasourceArray = newValue
+        }
+    }
+    
+    var notiArray:[UILocalNotification] {              //存放LocakNotification的数组
+        get {
+            return SCNotification.notiArray
+        }
+        set {
+            SCNotification.notiArray = newValue
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         UIApplication.sharedApplication().statusBarHidden = true
         initTableView()
-    }
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        print("diaoyongle,dashadiao")
     }
     
     func initTableView() {
@@ -37,21 +49,6 @@ class ViewController: UIViewController {
         tableView.registerClass(SCClockCell.self, forCellReuseIdentifier: iden)
         self.view.addSubview(tableView)
     }
-
-    @IBAction func setClock(sender: AnyObject) {
-        let notification = UILocalNotification()
-        notification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(5.0))
-        notification.timeZone = NSTimeZone.localTimeZone()
-        notification.alertBody = "caonima"
-        notification.alertTitle = "nimeide"
-        notification.soundName = "alarm29.m4a"
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-    }
-    
-    deinit {
-        print("deinit调用了")
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -67,14 +64,24 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return datasourceArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell: SCClockCell = (tableView.dequeueReusableCellWithIdentifier(iden, forIndexPath: indexPath) as? SCClockCell)!
         cell.selectionStyle = .None
-        cell.clockView?.delegate = self
+        cell.clockView!.delegate = self
+        cell.clockView!.timeLabel.text = datasourceArray[indexPath.row] as? String
+        let notiArr = notiArray
+        if notiArr.count == datasourceArray.count {
+            for noti in notiArr {
+                if  let rawValue = noti.userInfo!["state"] as? Int {
+                    let state = rawValue == 1 ? ClockSwitchState.On : ClockSwitchState.Off
+                    cell.initState = state
+                }
+            }
+        }
         
         return cell
     }
@@ -97,8 +104,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
                     let gesture = UITapGestureRecognizer.init(target: self, action: Selector("tapWindow:"))
                     self.w!.addGestureRecognizer(gesture)
                     self.w!.OKHander = {(time: String) ->Void in
-                        self.timeStr = time
                         cell.clockView!.timeLabel.text = time
+                        let array = self.datasourceArray     //此处是为了触发set方法，直接赋值不会触发
+                        array[indexPath.row] = time          //下面一样，为了触发notiarray set方法
+                        self.datasourceArray = array         //
                         self.tapWindow(gesture)
                     }
             })
@@ -109,7 +118,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     //MARK:clockview 的代理方法  delegate
     
     func clockViewChanged(clockView: SCClockView, atCell: SCClockCell, toState: ClockSwitchState) {
-        print("state == \(toState)")
+        let indexPath = tableView.indexPathForCell(atCell)!
+        print("state == \(toState) and indexpath == \(indexPath.row) and time == \(clockView.timeLabel.text!)")
+        var array = notiArray
+        switch toState {
+            
+        case .Off:
+            
+            var userInfo = array[indexPath.row].userInfo
+            userInfo!["state"] = ClockSwitchState.Off.rawValue
+            array[indexPath.row].userInfo = userInfo
+            notiArray = array
+            let noti = notiArray[indexPath.row]
+            UIApplication.sharedApplication().cancelLocalNotification(noti)
+        case .On:
+            let timeStr = atCell.clockView!.timeLabel.text
+            let noti = array[indexPath.row]
+            noti.fireDate = stringToNSDate(timeStr!)
+            noti.timeZone = NSTimeZone.defaultTimeZone()
+            noti.repeatInterval = .Day
+            noti.userInfo!["state"] = ClockSwitchState.On.rawValue
+            array[indexPath.row] = noti
+            notiArray = array
+            UIApplication.sharedApplication().scheduleLocalNotification(notiArray[indexPath.row])
+        }
     }
     
     //MARK:-
@@ -129,6 +161,29 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
                     
                 })
         }
+    }
+    
+    //转换字符串到nsdate
+    func stringToNSDate(string: String) ->NSDate {
+        let formatter = NSDateFormatter.init()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        formatter.dateStyle = .FullStyle
+//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+//        let component = calendar.components(.Day, fromDate: NSDate())
+//        component.hour = 7
+//        component.minute = 5
+//        component.second = 5
+//        
+//        let dateetete = calendar.dateFromComponents(component)
+//        print(dateetete)
+        let adf = NSDate.init(timeIntervalSince1970: 8*60*60)
+        print(formatter.stringFromDate(adf))
+        print(formatter.dateFromString(string))
+        if let date = formatter.dateFromString(string) {
+            print(date)
+            return date
+        } else { return NSDate() }
+        
     }
     
     

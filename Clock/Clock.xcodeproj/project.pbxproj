@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		40574D821BFAD9E9009950CC /* SCNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40574D811BFAD9E9009950CC /* SCNotification.swift */; };
 		407CE3751BF468C40032B575 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407CE3741BF468C40032B575 /* AppDelegate.swift */; };
 		407CE3771BF468C40032B575 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407CE3761BF468C40032B575 /* ViewController.swift */; };
 		407CE37A1BF468C40032B575 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 407CE3781BF468C40032B575 /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		40574D811BFAD9E9009950CC /* SCNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNotification.swift; sourceTree = "<group>"; };
 		407CE3711BF468C40032B575 /* Clock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		407CE3741BF468C40032B575 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		407CE3761BF468C40032B575 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				407CE3861BF46A420032B575 /* alarm29.m4a */,
 				407CE3741BF468C40032B575 /* AppDelegate.swift */,
 				407CE3761BF468C40032B575 /* ViewController.swift */,
+				40574D811BFAD9E9009950CC /* SCNotification.swift */,
 				5A4786901BF83783003EA8B5 /* Cell */,
 				5A4786911BF8378F003EA8B5 /* DatePick */,
 				407CE38C1BF493E20032B575 /* Extension */,
@@ -183,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				407CE3771BF468C40032B575 /* ViewController.swift in Sources */,
+				40574D821BFAD9E9009950CC /* SCNotification.swift in Sources */,
 				407CE3751BF468C40032B575 /* AppDelegate.swift in Sources */,
 				5A1CE2991BF7230300653F58 /* SCPickerWindow.swift in Sources */,
 				408F733C1BF56B7F00F5D160 /* SCClockView.swift in Sources */,
