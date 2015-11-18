@@ -102,6 +102,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
                     self.w!.addGestureRecognizer(gesture)
                     self.w!.OKHander = {(time: String) ->Void in
                         cell.clockView!.timeLabel.text = time
+                        if cell.clockView!.state == .On {
+                            self.createNotification(indexPath.row, index: indexPath.row, fireDate: self.stringToNSDate(time))
+                        }
                         let array = self.datasourceArray     //此处是为了触发set方法，直接赋值不会触发
                         array[indexPath.row] = time          //下面一样，为了触发notiarray set方法
                         self.datasourceArray = array         //
@@ -134,13 +137,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
             
             let timeStr = atCell.clockView!.timeLabel.text!
             let fireDate = stringToNSDate(timeStr)
-            let noti = createNotification(row)
-            noti.fireDate = fireDate
-            UIApplication.sharedApplication().scheduleLocalNotification(noti)
-            var array = notiArray
-            array[row] = 1
-            notiArray = array
+            createNotification(row, index: row, fireDate: fireDate)
+            
         }
+        print(UIApplication.sharedApplication().scheduledLocalNotifications!)
     }
     
     //MARK:-
@@ -173,21 +173,34 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ClockViewD
     }
     
     //创建一个LocalNotification
-    func createNotification(info: Int) ->UILocalNotification {
+    func createNotification(info: Int, index:Int, fireDate: NSDate) {
+        //把已经有的删除
+        let notificationArray = UIApplication.sharedApplication().scheduledLocalNotifications!
+        for noti in notificationArray {
+            if let info = noti.userInfo!["info"] as? Int where info == index {
+                UIApplication.sharedApplication().cancelLocalNotification(noti)
+                var array = notiArray
+                array[index] = 0
+                notiArray = array
+            }
+        }
+        //创建一个新的
         let notification = UILocalNotification()
-        //        notification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(5.0))
-        notification.timeZone = NSTimeZone.localTimeZone()
+        notification.timeZone = NSTimeZone.init(forSecondsFromGMT: 0)       //TimeZone.getTimeZone( "Europe/London ");//格林威治
         notification.repeatInterval = .Day
         notification.alertBody = "该起床了"         //显示的信息
 //        notification.applicationIconBadgeNumber = 1    //程序角标
+        notification.fireDate = fireDate
         notification.alertTitle = "nimeide"
         notification.hasAction = true
         notification.alertAction = "起床"          // laert时候的标题
         notification.alertLaunchImage = "avatar.jpg"
         notification.soundName = "alarm29.m4a"
         notification.userInfo = ["info": info]
-
-        return notification
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        var array = notiArray
+        array[index] = 1
+        notiArray = array
     }
 }
 
