@@ -1,6 +1,6 @@
 # SCClock
 =========
-# 是一个关于闹钟的APP
+# this is an alarm clock APP
 =========
-修改了时区
+modify it 
 >>>>>>> one
